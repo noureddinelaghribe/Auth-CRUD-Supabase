@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spacing="12dp">
+
+        <!-- Version -->
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Version: 1.0.0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"/>
+
+        <!-- Update Info -->
+        <TextView
+            android:id="@+id/tvUpdateMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Mode: Enabled"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/tvUpdateUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update URL: https://example.com/update"
+            android:textSize="16sp"
+            android:autoLink="web"/>
+
+        <!-- Maintenance Info -->
+        <TextView
+            android:id="@+id/tvMaintenanceMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maintenance Mode: Disabled"
+            android:textSize="16sp"
+            android:paddingTop="12dp"/>
+
+        <TextView
+            android:id="@+id/tvMaintenanceMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maintenance Message: None"
+            android:textSize="16sp"/>
+
+        <!-- APIs Info -->
+        <TextView
+            android:id="@+id/tvApisHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="APIs Configuration:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutApis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp">
+
+            <!-- Individual API items will be added dynamically -->
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

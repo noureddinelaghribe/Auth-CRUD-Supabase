@@ -24,6 +24,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var forgetPasswordText: TextView
     private lateinit var progressBar: ProgressBar
 
+    /** دالة تهيئ شاشة تسجيل الدخول */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
@@ -33,6 +34,7 @@ class SignInActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+    /** دالة تربط عناصر الواجهة بمتغيرات الكود */
     private fun initViews() {
         emailEditText = findViewById(R.id.emailEditText)
         passwordEditText = findViewById(R.id.passwordEditText)
@@ -42,6 +44,7 @@ class SignInActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
     }
 
+    /** دالة تراقب حالة التحميل ونتيجة المصادقة */
     private fun setupObservers() {
         // مراقبة حالة التحميل
         viewModel.loading.observe(this) { isLoading ->
@@ -55,7 +58,7 @@ class SignInActivity : AppCompatActivity() {
             when (result) {
                 is AuthResult.Success -> {
                     Toast.makeText(this, "تم تسجيل الدخول بنجاح!", Toast.LENGTH_SHORT).show()
-                    navigateToHome()
+                    navigateToSplash()
                     viewModel.clearResult()
                 }
                 is AuthResult.Error -> {
@@ -69,6 +72,7 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    /** دالة تضبط أزرار التسجيل والتنقل */
     private fun setupClickListeners() {
         // زر تسجيل الدخول
         signInButton.setOnClickListener {
@@ -88,8 +92,9 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToHome() {
-        val intent = Intent(this, HomeActivity::class.java)
+    /** دالة تنقل المستخدم إلى شاشة البداية */
+    private fun navigateToSplash() {
+        val intent = Intent(this, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

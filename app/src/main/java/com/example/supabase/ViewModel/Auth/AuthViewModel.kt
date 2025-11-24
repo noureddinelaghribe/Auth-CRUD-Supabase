@@ -9,92 +9,88 @@ import androidx.lifecycle.viewModelScope
 import com.example.supabase.Repository.Auth.AuthRepository
 import com.example.supabase.Repository.Auth.AuthResult
 import com.example.supabase.Repository.Auth.AuthState
+import com.example.supabase.utels.PreferencesHelper
 import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = AuthRepository(application.applicationContext)
+    private val prefsHelper = PreferencesHelper(application.applicationContext)
 
-    // حالة التحميل
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    // نتيجة العملية
     private val _result = MutableLiveData<AuthResult?>()
     val result: LiveData<AuthResult?> = _result
 
-    // البريد الإلكتروني للمستخدم
     private val _userEmail = MutableLiveData<String?>()
     val userEmail: LiveData<String?> = _userEmail
 
     init {
-        _userEmail.value = repository.getUserEmail()
+        _userEmail.value = prefsHelper.getEmail()
     }
 
-    // التسجيل
+    /** دالة مسؤولة عن طلب تسجيل مستخدم جديد */
     fun signUp(email: String, password: String) {
         if (!validateInput(email, password)) return
 
-        _loading.value = true
+        setLoading(true)
         viewModelScope.launch {
-            val r = repository.signUp(email, password)
-            _result.value = r
-            _loading.value = false
+            _result.value = repository.signUp(email, password)
+            setLoading(false)
         }
     }
 
-    // تسجيل الدخول
+    /** دالة مسؤولة عن تسجيل الدخول وتحديث البريد المخزن */
     fun signIn(email: String, password: String) {
         if (!validateInput(email, password)) return
 
-        _loading.value = true
+        setLoading(true)
         viewModelScope.launch {
-            val r = repository.signIn(email, password)
-            _result.value = r
-            _loading.value = false
-            if (r is AuthResult.Success) {
-                _userEmail.value = repository.getUserEmail()
+            val result = repository.signIn(email, password)
+            _result.value = result
+            if (result is AuthResult.Success) {
+                _userEmail.value = prefsHelper.getEmail()
             }
+            setLoading(false)
         }
     }
 
-    // إعادة تعيين كلمة المرور
+    /** دالة ترسل طلب إعادة ضبط كلمة المرور */
     fun resetPassword(email: String) {
         if (email.isBlank()) {
             _result.value = AuthResult.Error("يرجى إدخال البريد الإلكتروني")
             return
         }
 
-        _loading.value = true
+        setLoading(true)
         viewModelScope.launch {
-            val r = repository.resetPassword(email)
-            _result.value = r
-            _loading.value = false
+            _result.value = repository.resetPassword(email)
+            setLoading(false)
         }
     }
 
-    // تسجيل الخروج
+    /** دالة تنفذ عملية تسجيل الخروج من خلال المستودع */
     fun signOut() {
-        _loading.value = true
+        setLoading(true)
         viewModelScope.launch {
-            val r = repository.signOut()
-            _result.value = r
+            _result.value = repository.signOut()
             _userEmail.value = null
-            _loading.value = false
+            setLoading(false)
         }
     }
 
-    // مسح النتيجة
+    /** دالة تهيئ النتيجة كي لا يتم معالجتها مرتين */
     fun clearResult() {
         _result.value = null
     }
 
-    // التحقق من المصادقة
+    /** دالة تفحص حالة المصادقة عند الحاجة */
     fun checkAuth(): AuthState {
         return repository.checkAuthOnLaunch()
     }
 
-    // التحقق من صحة المدخلات
+    /** دالة خاصة تتحقق من صحة البريد وكلمة المرور */
     private fun validateInput(email: String, password: String): Boolean {
         if (email.isBlank()) {
             _result.value = AuthResult.Error("يرجى إدخال البريد الإلكتروني")
@@ -117,5 +113,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         return true
+    }
+
+    /** دالة مساعدة لضبط حالة التحميل بشكل موحد */
+    private fun setLoading(show: Boolean) {
+        _loading.value = show
     }
 }

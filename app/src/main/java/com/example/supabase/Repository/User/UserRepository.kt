@@ -1,23 +1,62 @@
 package com.example.supabase.Repository.User
 
 import android.content.Context
+import android.util.Log
 import com.example.supabase.data.User
 
-class UserRepository(private val context: Context) {
-    
+class UserRepository(context: Context) {
+
+    companion object {
+        private const val TAG = "UserRepository"
+    }
+
     init {
-        // Initialize the Retrofit instance with the auth token
         UserRetrofitInstance.initialize(context)
     }
 
-    suspend fun getUsers() = UserRetrofitInstance.api.getUsers()
+    /** دالة تجلب قائمة المستخدمين بالكامل */
+    suspend fun getUsers(): Result<List<User>> = try {
+        val response = UserRetrofitInstance.api.getUsers()
+        Log.d(TAG, "Fetched users: ${response.size}")
+        Result.success(response)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching users", e)
+        Result.failure(e)
+    }
 
-    suspend fun addUser(user: User) =
-        UserRetrofitInstance.api.insertUser(user)
+    /** دالة تضيف مستخدم جديد */
+    suspend fun addUser(user: User): Result<List<User>> = try {
+        val response = UserRetrofitInstance.api.insertUser(user)
+        if (response.isSuccessful) {
+            Result.success(response.body() ?: emptyList())
+        } else {
+            Result.failure(Exception("رمز الخطأ: ${response.code()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
-    suspend fun updateUser(uid: String, user: User) =
-        UserRetrofitInstance.api.updateUser(uid, user)
+    /** دالة تحدث بيانات مستخدم محدد */
+    suspend fun updateUser(uid: String, user: User): Result<List<User>> = try {
+        val response = UserRetrofitInstance.api.updateUser("eq.$uid", user)
+        if (response.isSuccessful) {
+            Result.success(response.body() ?: emptyList())
+        } else {
+            Result.failure(Exception("رمز الخطأ: ${response.code()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
-    suspend fun deleteUser(uid: String) =
-        UserRetrofitInstance.api.deleteUser(uid)
+    /** دالة تحذف مستخدم */
+    suspend fun deleteUser(uid: String): Result<Unit> = try {
+        val response = UserRetrofitInstance.api.deleteUser("eq.$uid")
+        if (response.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception("رمز الخطأ: ${response.code()}"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 }

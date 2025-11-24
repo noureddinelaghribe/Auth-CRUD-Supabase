@@ -24,6 +24,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var progressBar: ProgressBar
 
+    /** دالة تهيئ شاشة استعادة كلمة المرور */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forget_password)
@@ -33,6 +34,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+    /** دالة تربط عناصر الواجهة */
     private fun initViews() {
         emailEditText = findViewById(R.id.emailEditText)
         resetButton = findViewById(R.id.resetButton)
@@ -41,6 +43,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
     }
 
+    /** دالة تراقب حالة التحميل ونتيجة الطلب */
     private fun setupObservers() {
         // مراقبة حالة التحميل
         viewModel.loading.observe(this) { isLoading ->
@@ -74,6 +77,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
         }
     }
 
+    /** دالة تضبط أزرار الإرسال والرجوع */
     private fun setupClickListeners() {
         // زر إعادة التعيين
         resetButton.setOnClickListener {
@@ -93,6 +97,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
     }
 
     @SuppressLint("GestureBackNavigation")
+    /** دالة تغلق الشاشة عند الرجوع */
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
